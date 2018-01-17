@@ -1,0 +1,97 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+android {
+    buildToolsVersion "25.0.1"
+    compileSdkVersion 23
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    factualEngineVersion = "5.3.0"
+    segmentAnalyticsVersion = "4+"
+
+    artifact = "analytics-engine"
+    libraryVersion = "1.0.0"
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile "com.segment.analytics.android:analytics:${segmentAnalyticsVersion}"
+    compile "com.factual:engine-sdk:${factualEngineVersion}"
+}
+
+// local repo
+install {
+    repositories {
+        mavenInstaller {
+            pom {
+                project {
+                    groupId 'com.factual.engine.analytics'
+                    artifactId artifact
+                    version libraryVersion
+
+                    name 'AnalyticsEngine'
+                    description 'Segment Analytics and Factual Engine Integration'
+                    url 'https://github.com/Factual/segment-analytics-factual-engine-android'
+                    licenses {
+                        license {
+                            name 'The MIT License (MIT)'
+                            url 'http://opensource.org/licenses/MIT'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'factual'
+                            name 'Factual, Inc.'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// external repo
+uploadArchives {
+    repositories {
+        def deployRepoUrl = System.getenv('DEPLOY_REPO_URL') ?: ''
+        def deployRepoUser = System.getenv('DEPLOY_REPO_USER') ?: ''
+        def deployRepoPass = System.getenv('DEPLOY_REPO_PASS') ?: ''
+
+        mavenDeployer {
+            repository(url: deployRepoUrl) {
+                authentication(userName: deployRepoUser, password: deployRepoPass)
+            }
+            pom = install.repositories.mavenInstaller.pom
+        }
+    }
+}
