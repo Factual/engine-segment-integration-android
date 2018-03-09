@@ -10,3 +10,4 @@
 **/*.aar
 **/t_*
 app/src/main/resources/creds.properties
+library/build/**
