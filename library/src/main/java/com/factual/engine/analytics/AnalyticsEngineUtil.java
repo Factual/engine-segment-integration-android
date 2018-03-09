@@ -14,14 +14,19 @@ import com.segment.analytics.Properties;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class AnalyticsEngineUtil {
-    public static void trackAllPlaceVisits() {
-        addDefaultActionReceiver();
+
+    public static final String USER_JOURNEY_CIRC_ID = "factual-segment-user-journey-circ-id";
+    public static final String USER_JOURNEY_CIRC_EXPR = "(at any-factual-place)";
+
+    public static void trackUserJourney() {
+        addUserJourneyActionReceiver();
         FactualCircumstance circumstance =
-            new FactualCircumstance("factual-segment-default-circ-id", "(at any-factual-place)",
-                    AnalyticsEngineActionReceiver.ACTION_ID);
+            new FactualCircumstance(USER_JOURNEY_CIRC_ID, USER_JOURNEY_CIRC_EXPR,
+                    AnalyticsEngineUserJourneyActionReceiver.ACTION_ID);
         Log.i("engine", "Registering circumstance: <" + circumstance.getCircumstanceId()
                 + "," + circumstance.getExpression() + "," + circumstance.getActionId() + ">");
         try {
@@ -32,11 +37,11 @@ public class AnalyticsEngineUtil {
         }
     }
 
-    public static void addDefaultActionReceiver() {
+    public static void addUserJourneyActionReceiver() {
         Log.i("engine", "Registering action handler: "
-                + AnalyticsEngineActionReceiver.ACTION_ID);
-        FactualEngine.registerAction(AnalyticsEngineActionReceiver.ACTION_ID,
-                AnalyticsEngineActionReceiver.class);
+                + AnalyticsEngineUserJourneyActionReceiver.ACTION_ID);
+        FactualEngine.registerAction(AnalyticsEngineUserJourneyActionReceiver.ACTION_ID,
+                AnalyticsEngineUserJourneyActionReceiver.class);
     }
 
     public static void logPlaceEntered(FactualPlace atPlace, String incidentId, Analytics analytics) {
@@ -74,11 +79,11 @@ public class AnalyticsEngineUtil {
         p.putValue("accuracy", place.getDistance());
         p.putValue("place_id", place.getFactualId());
         p.putValue("place_name", place.getName());
-        p.putValue("confidence", place.getThresholdMet().toString().toLowerCase());
-        if(place.getChainId() != null) {
+        p.putValue("confidence", place.getThresholdMet().toString().toLowerCase(Locale.getDefault()));
+        if(place.getChainId() != null && place.getChainId().trim().length() > 0) {
             p.putValue("place_chain_id", place.getChainId());
         }
-        if(place.getCategoryIds() != null) {
+        if(place.getCategoryIds() != null && place.getCategoryIds().size() > 0) {
             List<String> cats = new ArrayList<>(place.getCategoryIds().size());
             for (Integer categoryId: place.getCategoryIds()) {
                 cats.add(categoryId.toString());

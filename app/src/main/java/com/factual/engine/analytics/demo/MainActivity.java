@@ -17,10 +17,25 @@ import com.factual.engine.api.FactualCircumstanceException;
 import com.factual.engine.api.FactualPlacesListener;
 import com.segment.analytics.Analytics;
 
+import java.io.IOException;
+import java.util.Properties;
+
 public class MainActivity extends AppCompatActivity {
 
-    private final String SEGMENT_WRITE_KEY = "WRITE KEY GOES HERE";
-    private final String FACTUAL_ENGINE_API_KEY = "ENGINE KEY GOES HERE";
+    private final static String SEGMENT_WRITE_KEY;
+    private final static String FACTUAL_ENGINE_API_KEY;
+
+    static {
+        Properties p = new Properties();
+        try {
+            p.load(MainActivity.class.getResourceAsStream("/creds.properties"));
+        }
+        catch(IOException ie) {
+            Log.e("engine-demo", ie.getMessage());
+        }
+        SEGMENT_WRITE_KEY = p.getProperty("segment_write_key");
+        FACTUAL_ENGINE_API_KEY = p.getProperty("engine_api_key");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,13 +120,8 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             FactualPlacesListener l = new AnalyticsEnginePlaceCandidatesListener(analytics);
             public void onClick(View v) {
-                try {
-                    Log.i("engine", "What's around?");
-                    FactualEngine.getPlaceCandidates(l);
-                }
-                catch (FactualException e) {
-                    Log.e("engine", e.getMessage());
-                }
+                Log.i("engine", "What's around?");
+                FactualEngine.getPlaceCandidates(l);
             }
         });
     }

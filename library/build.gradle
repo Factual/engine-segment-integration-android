@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    buildToolsVersion "25.0.1"
+    buildToolsVersion '26.0.2'
     compileSdkVersion 23
 
     defaultConfig {
@@ -21,8 +21,10 @@ android {
         }
     }
 
+    // disabling lint checks because of Thrift dependency
     lintOptions {
         disable 'InvalidPackage'
+        disable 'DuplicatePlatformClasses'
     }
 }
 
@@ -31,21 +33,20 @@ repositories {
 }
 
 ext {
-    factualEngineVersion = "5.3.0"
+    factualEngineVersion = "6.0.0"
     segmentAnalyticsVersion = "4+"
 
     artifact = "analytics-engine"
-    libraryVersion = "1.0.0"
+    libraryVersion = "2.0.0"
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.segment.analytics.android:analytics:${segmentAnalyticsVersion}"
-    compile "com.factual:engine-sdk:${factualEngineVersion}"
+    implementation "com.segment.analytics.android:analytics:${segmentAnalyticsVersion}"
+    implementation "com.factual:engine-sdk:${factualEngineVersion}"
 }
 
 // local repo

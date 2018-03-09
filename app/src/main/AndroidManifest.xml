@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <service android:name="com.factual.engine.FactualEngine"/>
-        <receiver android:name="com.factual.engine.analytics.AnalyticsEngineActionReceiver"/>
+        <receiver android:name="com.factual.engine.analytics.AnalyticsEngineUserJourneyActionReceiver"/>
         <receiver android:name="com.factual.engine.analytics.AnalyticsEngineClientReceiver"/>
     </application>
 </manifest>

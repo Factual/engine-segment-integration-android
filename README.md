@@ -34,8 +34,8 @@ repositories {
 
 dependencies {
   compile 'com.segment.analytics.android:analytics:4.+'
-  compile 'com.factual:engine-sdk:5.3.0'
-  compile 'com.factual.engine.analytics:analytics-engine:1.0.0'
+  compile 'com.factual:engine-sdk:6.0.0'
+  compile 'com.factual.engine.analytics:analytics-engine:2.0.0'
 }
 ```
 
@@ -50,7 +50,7 @@ Download the library from [Bintray](https://factual.bintray.com/maven) and add i
 Import the utility class `com.factual.engine.analytics.AnalyticsEngineUtil` in your implementation of `FactualClientReceiver` or `FactualClientListener`, and inside of the `onStarted` method add the following line of code:
 
 ```
-AnalyticsEngineUtil.trackAllPlaceVisits();
+AnalyticsEngineUtil.trackUserJourney();
 ```
 
 **That's it!**
@@ -74,13 +74,13 @@ In your implementation of `FactualClientReceiver` or `FactualClientListener` (se
 ### To track the entire user journey
 
 ```
-AnalyticsEngineUtil.trackAllPlaceVisits();
+AnalyticsEngineUtil.trackUserJourney();
 ```
 
 This method call configures Engine in two ways:
 
 * it registers an action with Engine that calls Segment's Track API
-* it registers a Circumstance mapped to this action that detects whenever you are **at** any one
+* it registers a Circumstance to take this action whenever you are **at** any one
   of the 100+ millon places in Factual's [Global Places](http://www.factual.com/products/global) dataset, at any time
 
 ### To track user defined Circumstances only
@@ -88,11 +88,11 @@ This method call configures Engine in two ways:
 First register the bundled tracking action handler with Engine:
 
 ```
-AnalyticsEngineUtil.addDefaultActionReceiver();
+AnalyticsEngineUtil.addUserJourneyActionReceiver();
 ```
 
-Then for programmatically created Circumstances, use `AnalyticsEngineActionReceiver.ACTION_ID` as the action id to map your Circumstance to. For
-user defined Circumstances created in the Engine Garage, map them to a new action id called `factual-segment-default-action-id`.
+Then for programmatically created Circumstances, use `AnalyticsEngineUserJourneyActionReceiver.ACTION_ID` as the action id to map your Circumstance to. For
+user defined Circumstances created in the Engine Garage, map them to a new action id called `factual-segment-user-journey-action-id`.
 
 ## Roll your own location tracking strategy
 
