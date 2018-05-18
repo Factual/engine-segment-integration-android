@@ -33,11 +33,11 @@ repositories {
 }
 
 ext {
-    factualEngineVersion = "6.0.0"
+    factualEngineVersion = "7.0.0"
     segmentAnalyticsVersion = "4+"
 
     artifact = "analytics-engine"
-    libraryVersion = "2.0.0"
+    libraryVersion = "3.0.0"
 }
 
 dependencies {

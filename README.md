@@ -1,6 +1,6 @@
 # Description
 
-This repository contains the code for an integration between Segment Analytics [Track API](https://segment.com/docs/sources/mobile/ios/#track)
+This repository contains the code for an integration between Segment Analytics [Track API](https://segment.com/docs/sources/mobile/android/#track)
 and Factual [Engine SDK for Android](http://developer.factual.com/engine/android).
 
 While this is not a Segment [packaged integration](https://segment.com/docs/guides/partners/packaged-integration.md), it's just as simple to use
@@ -10,9 +10,8 @@ and it follows Segment's guidelines for tracking location events.
 
 * an Engine API key
   * please log in to Factual.com or contact Factual for your key
-* an implementation of a `FactualClientReceiver` or `FactualClientListener`
+* an implemenation of a `UserJourneyReceiver`
   * see our [example](http://developer.factual.com/engine/android/#example-implementation-code) for reference
-  * we highly recommend an implemenation of `FactualClientReceiver` in order to capture background events
 * a Segment write key
   * see [here](https://segment.com/docs/guides/setup/how-do-i-find-my-write-key/)
 * a initialized `Analytics` client
@@ -34,8 +33,8 @@ repositories {
 
 dependencies {
   compile 'com.segment.analytics.android:analytics:4.+'
-  compile 'com.factual:engine-sdk:6.0.0'
-  compile 'com.factual.engine.analytics:analytics-engine:2.0.0'
+  compile 'com.factual:engine-sdk:7.0.0'
+  compile 'com.factual.engine.analytics:analytics-engine:3.0.0'
 }
 ```
 
@@ -47,10 +46,12 @@ Download the library from [Bintray](https://factual.bintray.com/maven) and add i
 
 # Quickstart
 
-Import the utility class `com.factual.engine.analytics.AnalyticsEngineUtil` in your implementation of `FactualClientReceiver` or `FactualClientListener`, and inside of the `onStarted` method add the following line of code:
+Import the utility class `com.factual.engine.analytics.AnalyticsEngineUtil` in your implementation of `UserJourneyReceiver`, and inside of the `onUserJourneyEvent` method add a few lines of code:
 
 ```
-AnalyticsEngineUtil.trackUserJourney();
+// we assume that you already instantiated an Analytics object
+Analytics analytics = Analytics.with(getContext().getApplicationContext());
+AnalyticsEngineUtil.trackUserJourneyEvent(userJourneyEvent, analytics);
 ```
 
 **That's it!**
@@ -59,7 +60,7 @@ Engine will invoke Segment's Track API for every "Place Entered". You can verify
 
 # How to use
 
-We bundle classes that make it easy to call the Track API upon Circumstance detection.
+We bundle classes that make it easy to call the Track API through user journey events and/or upon Circumstance detection.
 
 Import the following to use them:
 
@@ -67,44 +68,48 @@ Import the following to use them:
 import com.factual.engine.analytics.*;
 ```
 
-## Use within your own custom Engine client receiver/listener
+## Full user journey tracking
 
-In your implementation of `FactualClientReceiver` or `FactualClientListener` (see [Requirements](#requirements)), simply add one line of code to the `onStarted` method.
-
-### To track the entire user journey
+In your implementation of `UserJourneyReceiver` (see [Requirements](#requirements)), simply add a few lines of code to the `onUserJourneyEvent` method.
 
 ```
-AnalyticsEngineUtil.trackUserJourney();
+// we assume that you already instantiated an Analytics object
+Analytics analytics = Analytics.with(getContext().getApplicationContext());
+
+AnalyticsEngineUtil.trackUserJourneyEvent(userJourneyEvent, analytics);
 ```
+This function will call Segment's Track API whenever you are **at** any one of the 100+ millon places in Factual's [Global Places](http://www.factual.com/products/global) dataset, at any time.
 
-This method call configures Engine in two ways:
-
-* it registers an action with Engine that calls Segment's Track API
-* it registers a Circumstance to take this action whenever you are **at** any one
-  of the 100+ millon places in Factual's [Global Places](http://www.factual.com/products/global) dataset, at any time
-
-### To track user defined Circumstances only
+## Selective user journey tracking via Circumstance
 
 First register the bundled tracking action handler with Engine:
 
 ```
+// this may be invoked before or after Engine has been started
 AnalyticsEngineUtil.addUserJourneyActionReceiver();
 ```
 
-Then for programmatically created Circumstances, use `AnalyticsEngineUserJourneyActionReceiver.ACTION_ID` as the action id to map your Circumstance to. For
-user defined Circumstances created in the Engine Garage, map them to a new action id called `factual-segment-user-journey-action-id`.
+* when creating programmatic Circumstances
+  * use `AnalyticsEngineTrackActionReceiver.ACTION_ID` as the action id to map your Circumstance to
+* when creating Circumstances in the [Engine Garage](https://engine.factual.com/garage)
+  * map them to [this](library/src/main/java/com/factual/engine/analytics/AnalyticsEngineTrackActionReceiver.java#L12) action
+
+### Caveats
+* If you implement both full and selective user journey tracking, there is potential to track the same place visit twice
+* Place visits recorded by selective tracking include the Circumstance id and name, and the rest of the information is the same
+* Unless you are okay with duplicate place visits, we recommend using the library to track either full or selective user journey but not both
 
 ## Roll your own location tracking strategy
 
-The bundled utility class [AnalyticsEngineUtil](https://github.com/Factual/segment-analytics-factual-engine-android/blob/master/library/src/main/java/com/factual/engine/analytics/AnalyticsEngineUtil.java)
-provides other methods  you can invoke from your own custom action handler(s) to fine tune which location events you wish to track.
+The bundled utility class [AnalyticsEngineUtil](library/src/main/java/com/factual/engine/analytics/AnalyticsEngineUtil.java)
+provides other methods you can invoke from your own custom receivers and listeners to fine tune which location events you wish to track.
 
-## Reference implementation of FactualClientReceiver
+## Reference implementation of UserJourneyReceiver
 
-Easily test this library by starting Engine with the bundled [AnalyticsEngineClientReceiver](https://github.com/Factual/segment-analytics-factual-engine-android/blob/master/library/src/main/java/com/factual/engine/analytics/AnalyticsEngineClientReceiver.java),
-which is a reference implemenation of `FactualClientReceiver`.
+Easily test this library by starting Engine with the bundled [AnalyticsEngineUserJourneyReferenceReceiver](library/src/main/java/com/factual/engine/analytics/AnalyticsEngineUserJourneyReferenceReceiver.java),
+which is a reference implemenation of `UserJourneyReceiver`.
 
-**Note**: We strongly encourage you to use your own implementation of `FactualClientReceiver` in Production to have full control over Engine behavior in addition to invoking Segment's Track API.
+**Note**: We strongly encourage you to use your own implementation of `UserJourneyReceiver` in Production to have full control over Engine behavior in addition to invoking Segment's Track API.
 
 # License
 
