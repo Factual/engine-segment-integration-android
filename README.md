@@ -10,8 +10,10 @@ and it follows Segment's guidelines for tracking location events.
 
 * an Engine API key
   * please log in to Factual.com or contact Factual for your key
-* an implemenation of a `UserJourneyReceiver`
+* an implemenation of [UserJourneyReceiver](http://developer.factual.com/engine_doc/Android/latest/com/factual/engine/api/mobile_state/UserJourneyReceiver.html)
+  * be sure to add your receiver to `AndroidManifest.xml`
   * see our [example](http://developer.factual.com/engine/android/#example-implementation-code) for reference
+    * we demonstrate how to register a `UserJourneyListener`, but the method is the same
 * a Segment write key
   * see [here](https://segment.com/docs/guides/setup/how-do-i-find-my-write-key/)
 * a initialized `Analytics` client
@@ -49,7 +51,7 @@ Download the library from [Bintray](https://factual.bintray.com/maven) and add i
 Import the utility class `com.factual.engine.analytics.AnalyticsEngineUtil` in your implementation of `UserJourneyReceiver`, and inside of the `onUserJourneyEvent` method add a few lines of code:
 
 ```
-// we assume that you already instantiated an Analytics object
+// we assume that you previously instantiated an Analytics singleton
 Analytics analytics = Analytics.with(getContext().getApplicationContext());
 AnalyticsEngineUtil.trackUserJourneyEvent(userJourneyEvent, analytics);
 ```
@@ -73,7 +75,7 @@ import com.factual.engine.analytics.*;
 In your implementation of `UserJourneyReceiver` (see [Requirements](#requirements)), simply add a few lines of code to the `onUserJourneyEvent` method.
 
 ```
-// we assume that you already instantiated an Analytics object
+// we assume that you previously instantiated an Analytics singleton
 Analytics analytics = Analytics.with(getContext().getApplicationContext());
 
 AnalyticsEngineUtil.trackUserJourneyEvent(userJourneyEvent, analytics);
@@ -86,13 +88,14 @@ First register the bundled tracking action handler with Engine:
 
 ```
 // this may be invoked before or after Engine has been started
-AnalyticsEngineUtil.addUserJourneyActionReceiver();
+// we also assume that you previously instantiated an Analytics singleton
+AnalyticsEngineUtil.addTrackActionReceiver();
 ```
 
 * when creating programmatic Circumstances
   * use `AnalyticsEngineTrackActionReceiver.ACTION_ID` as the action id to map your Circumstance to
 * when creating Circumstances in the [Engine Garage](https://engine.factual.com/garage)
-  * map them to [this](library/src/main/java/com/factual/engine/analytics/AnalyticsEngineTrackActionReceiver.java#L12) action
+  * map them to [this](library/src/main/java/com/factual/engine/analytics/AnalyticsEngineTrackActionReceiver.java#L13) action
 
 ### Caveats
 * If you implement both full and selective user journey tracking, there is potential to track the same place visit twice
