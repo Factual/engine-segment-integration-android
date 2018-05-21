@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "27.0.3"
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.factual.analytics.engine"
@@ -54,10 +54,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
-//    implementation 'com.factual.engine.analytics:analytics-engine:2.0.0'
+//    implementation 'com.factual.engine.analytics:analytics-engine:3.0.0'
     implementation project(":library")
     implementation "com.segment.analytics.android:analytics:4+"
-    implementation "com.factual:engine-sdk:6.0.0"
+    implementation "com.factual:engine-sdk:7+"
 }

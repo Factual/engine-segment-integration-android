@@ -12,7 +12,7 @@ import android.widget.Button;
 
 import com.factual.FactualException;
 import com.factual.engine.FactualEngine;
-import com.factual.engine.analytics.AnalyticsEngineClientReceiver;
+import com.factual.engine.analytics.AnalyticsEngineUserJourneyReferenceReceiver;
 import com.factual.engine.api.FactualCircumstanceException;
 import com.factual.engine.api.FactualPlacesListener;
 import com.segment.analytics.Analytics;
@@ -81,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startEngineWithAnalytics(){
-        FactualEngine.setListener(AnalyticsEngineClientReceiver.class);
+//        FactualEngine.setListener(AnalyticsEngineClientReferenceReceiver.class);
+        FactualEngine.setUserJourneyListener(AnalyticsEngineUserJourneyReferenceReceiver.class);
         try {
             Log.i("engine-demo", "Trying to start Engine");
             FactualEngine.start();

@@ -5,8 +5,9 @@ import android.util.Log;
 import com.factual.FactualCircumstance;
 import com.factual.FactualException;
 import com.factual.engine.FactualEngine;
-import com.factual.engine.api.FactualCircumstanceException;
 import com.factual.engine.api.FactualPlace;
+import com.factual.engine.api.mobile_state.FactualPlaceAttachmentUpdate;
+import com.factual.engine.api.mobile_state.UserJourneyEvent;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.Options;
 import com.segment.analytics.Properties;
@@ -16,44 +17,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public class AnalyticsEngineUtil {
 
-    public static final String USER_JOURNEY_CIRC_ID = "factual-segment-user-journey-circ-id";
-    public static final String USER_JOURNEY_CIRC_EXPR = "(at any-factual-place)";
+    private static final String PLACE_ENTERED = "Place Entered";
+    private static final String PLACE_APPROACHED = "Place Approached";
 
-    public static void trackUserJourney() {
-        addUserJourneyActionReceiver();
-        FactualCircumstance circumstance =
-            new FactualCircumstance(USER_JOURNEY_CIRC_ID, USER_JOURNEY_CIRC_EXPR,
-                    AnalyticsEngineUserJourneyActionReceiver.ACTION_ID);
-        Log.i("engine", "Registering circumstance: <" + circumstance.getCircumstanceId()
-                + "," + circumstance.getExpression() + "," + circumstance.getActionId() + ">");
-        try {
-            FactualEngine.registerCircumstance(circumstance);
-        }
-        catch (FactualCircumstanceException e) {
-            Log.e("engine", e.getMessage());
-        }
-    }
-
-    public static void addUserJourneyActionReceiver() {
+    public static void addTrackActionReceiver() {
         Log.i("engine", "Registering action handler: "
-                + AnalyticsEngineUserJourneyActionReceiver.ACTION_ID);
-        FactualEngine.registerAction(AnalyticsEngineUserJourneyActionReceiver.ACTION_ID,
-                AnalyticsEngineUserJourneyActionReceiver.class);
+                + AnalyticsEngineTrackActionReceiver.ACTION_ID);
+        FactualEngine.registerAction(AnalyticsEngineTrackActionReceiver.ACTION_ID,
+                AnalyticsEngineTrackActionReceiver.class);
     }
 
-    public static void logPlaceEntered(FactualPlace atPlace, String incidentId, Analytics analytics) {
-        logPlaceVisit(atPlace, incidentId, "Place Entered", analytics);
+    public static void trackUserJourneyEvent(UserJourneyEvent userJourneyEvent,
+                                             Analytics analytics) {
+        UUID uuid = UUID.randomUUID();
+        if(userJourneyEvent.hasPlaceAttachmentUpdate()) {
+            FactualPlaceAttachmentUpdate u = userJourneyEvent.getPlaceAttachmentUpdate();
+            for(FactualPlace atPlace: u.getNewlyAttachedPlaces()) {
+                logPlaceEntered(atPlace, uuid.toString(), analytics);
+            }
+        }
     }
 
-    public static void logPlaceNear(FactualPlace nearPlace, String incidentId, Analytics analytics) {
-        logPlaceVisit(nearPlace, incidentId, "Place Near", analytics);
+
+    public static void logPlaceEntered(FactualPlace atPlace, String incidentId,
+                                       Analytics analytics) {
+        logPlaceVisit(atPlace, incidentId, PLACE_ENTERED, analytics);
+    }
+
+    public static void logPlaceApproached(FactualPlace nearPlace, String incidentId,
+                                          Analytics analytics) {
+        logPlaceVisit(nearPlace, incidentId, PLACE_APPROACHED, analytics);
     }
 
     public static void logPlaceVisit(FactualPlace place, String incidentId, String eventName,
                                      Analytics analytics) {
+        logPlaceVisit(place, incidentId, eventName, null, analytics);
+    }
+
+    public static void logPlaceEntered(FactualCircumstance circumstance, FactualPlace atPlace,
+                                       String incidentId, Analytics analytics) {
+        logPlaceVisit(circumstance, atPlace, incidentId, PLACE_ENTERED, analytics);
+    }
+
+    public static void logPlaceApproached(FactualCircumstance circumstance, FactualPlace nearPlace,
+                                          String incidentId, Analytics analytics) {
+        logPlaceVisit(circumstance, nearPlace, incidentId, PLACE_APPROACHED, analytics);
+    }
+
+    public static void logPlaceVisit(FactualCircumstance circumstance, FactualPlace place,
+                                     String incidentId, String eventName, Analytics analytics) {
+        Map<String, String> eventProps = new HashMap<>();
+        if(circumstance != null) {
+            eventProps.put("circumstance_id", circumstance.getCircumstanceId());
+            eventProps.put("circumstance_expression", circumstance.getExpression());
+        }
+        logPlaceVisit(place, incidentId, eventName, eventProps, analytics);
+    }
+
+    public static void logPlaceVisit(FactualPlace place, String incidentId, String eventName,
+                                     Map<String, String> eventProperties, Analytics analytics) {
         if(analytics != null) {
             String engineVersion;
             try {
@@ -63,8 +89,11 @@ public class AnalyticsEngineUtil {
                 Log.e("engine", e.getMessage());
                 engineVersion = "N/A";
             }
-            analytics.track(
-                eventName, makePropertiesFrom(place, incidentId), makeOptionsFrom(engineVersion));
+            Properties placeProps = makePropertiesFrom(place, incidentId);
+            if(eventProperties != null && !eventProperties.isEmpty()) {
+                placeProps.putAll(eventProperties);
+            }
+            analytics.track(eventName, placeProps, makeOptionsFrom(engineVersion));
         }
         else {
             Log.e("engine", "Analytics not initialized!");
@@ -79,7 +108,8 @@ public class AnalyticsEngineUtil {
         p.putValue("accuracy", place.getDistance());
         p.putValue("place_id", place.getFactualId());
         p.putValue("place_name", place.getName());
-        p.putValue("confidence", place.getThresholdMet().toString().toLowerCase(Locale.getDefault()));
+        p.putValue("confidence",
+                place.getThresholdMet().toString().toLowerCase(Locale.getDefault()));
         if(place.getChainId() != null && place.getChainId().trim().length() > 0) {
             p.putValue("place_chain_id", place.getChainId());
         }

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     compileSdkVersion 23
 
     defaultConfig {
@@ -33,11 +33,11 @@ repositories {
 }
 
 ext {
-    factualEngineVersion = "6.0.0"
-    segmentAnalyticsVersion = "4+"
+    factualEngineVersion = "7.0.0"
+    segmentAnalyticsVersion = "4.0.0"
 
     artifact = "analytics-engine"
-    libraryVersion = "2.0.0"
+    libraryVersion = "3.0.0"
 }
 
 dependencies {
@@ -45,8 +45,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation "com.segment.analytics.android:analytics:${segmentAnalyticsVersion}"
-    implementation "com.factual:engine-sdk:${factualEngineVersion}"
+    compileOnly "com.segment.analytics.android:analytics:${segmentAnalyticsVersion}"
+    compileOnly "com.factual:engine-sdk:${factualEngineVersion}"
 }
 
 // local repo
