@@ -34,8 +34,8 @@ repositories {
 ...
 
 dependencies {
-  compile 'com.segment.analytics.android:analytics:4.+'
-  compile 'com.factual:engine-sdk:7.0.0'
+  compile 'com.segment.analytics.android:analytics:4+'
+  compile 'com.factual:engine-sdk:7+'
   compile 'com.factual.engine.analytics:analytics-engine:3.0.0'
 }
 ```
@@ -99,7 +99,7 @@ AnalyticsEngineUtil.addTrackActionReceiver();
 
 ### Caveats
 * If you implement both full and selective user journey tracking, there is potential to track the same place visit twice
-* Place visits recorded by selective tracking include the Circumstance id and name, and the rest of the information is the same
+* Place visits recorded by selective tracking include the Circumstance id and name, and the rest of the Place information is the same
 * Unless you are okay with duplicate place visits, we recommend using the library to track either full or selective user journey but not both
 
 ## Roll your own location tracking strategy
