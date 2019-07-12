@@ -1,2 +1,2 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.factual.engine.analytics" />
+    package="com.factual.engine.segment" />
