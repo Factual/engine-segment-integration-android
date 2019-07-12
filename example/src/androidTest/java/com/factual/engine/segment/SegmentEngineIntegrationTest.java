@@ -214,12 +214,13 @@ public class SegmentEngineIntegrationTest {
   private CircumstanceResponse createCircumstance() {
     String circumstanceId = "test-circumstance";
     String circumstanceExpression = "(at any-factual-place)";
-    String actionId = "push-to-segment";
+    ArrayList<String> tags = new ArrayList<>();
+    tags.add("push-to-segment");
     String circumstanceName = StubConfiguration.CIRCUMSTANCE_NAME;
     FactualCircumstance circumstance = new FactualCircumstance(
         circumstanceId,
         circumstanceExpression,
-        actionId,
+        tags,
         circumstanceName);
     String placeName = "test-place";
     String factualPlaceId = "test-id-123";

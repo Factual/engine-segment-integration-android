@@ -7,6 +7,7 @@ import com.factual.engine.api.CircumstanceResponse;
 import com.factual.engine.api.FactualPlace;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.Properties;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public class SegmentEngineIntegration {
   static final String INCIDENT_ID_KEY = "incidence_id";
   static final String USER_LATITUDE_KEY = "user_latitude";
   static final String USER_LONGITUDE_KEY = "user_longitude";
+  static final String TAGS_KEY = "tags";
   static final String EVENT_SOURCE_KEY = "event_source";
 
   static final String AT_PLACE_EVENT_KEY = "engine_at_";
@@ -94,12 +96,14 @@ public class SegmentEngineIntegration {
     String circumstanceName = response.getCircumstance().getName();
     double userLatitude = response.getLocation().getLatitude();
     double userLongitude = response.getLocation().getLongitude();
+    List<String> tags = response.getCircumstance().getTags();
     String incidentId = UUID.randomUUID().toString();
 
     // Add data properties
     properties.putValue(INCIDENT_ID_KEY, incidentId)
         .putValue(USER_LATITUDE_KEY, userLatitude)
         .putValue(USER_LONGITUDE_KEY, userLongitude)
+        .putValue(TAGS_KEY, tags)
         .putValue(EVENT_SOURCE_KEY, sourceName);
 
     // Push custom event to Segment

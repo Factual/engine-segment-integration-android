@@ -22,7 +22,6 @@ android {
     // disabling lint checks because of Thrift dependency
     lintOptions {
         disable 'InvalidPackage'
-//        disable 'DuplicatePlatformClasses'
     }
 }
 
@@ -32,7 +31,7 @@ repositories {
 
 ext {
     segmentVersion = "[4.0.0,)"
-    engineVersion = "[10.0.0,)"
+    engineVersion = "[11.0.0,)"
 
     artifact = "segment-engine"
     libraryVersion = "1.0.0"

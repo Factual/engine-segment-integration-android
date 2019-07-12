@@ -57,7 +57,9 @@ public class ExampleFactualClientReceiver extends FactualClientReceiver {
     @Override
     public void onCircumstancesMet(List<CircumstanceResponse> responses) {
         for (CircumstanceResponse response : responses) {
-            if (response.getCircumstance().getActionId().equals("push-to-segment")) {
+            String circumstanceName = response.getCircumstance().getName();
+            Log.i("engine", "Engine triggered circumstance: " + circumstanceName);
+            if (response.getCircumstance().getTags().contains("push-to-segment")) {
                 SegmentEngineIntegration.pushToSegment(getContext().getApplicationContext(), response);
             }
         }
