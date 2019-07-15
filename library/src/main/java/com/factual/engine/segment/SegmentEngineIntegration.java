@@ -7,10 +7,13 @@ import com.factual.engine.api.CircumstanceResponse;
 import com.factual.engine.api.FactualPlace;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.Properties;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Contains the main integration methods (all of which are static) for sending data from Factual's
+ * Location Engine to Segment.
+ */
 public class SegmentEngineIntegration {
 
   private static Boolean trackingSpans = false;

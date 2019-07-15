@@ -9,7 +9,6 @@ import com.factual.engine.api.CircumstanceResponse;
 import com.factual.engine.api.FactualCircumstance;
 import com.factual.engine.api.FactualPlace;
 import com.factual.engine.api.PlaceConfidenceThreshold;
-import com.factual.engine.api.mobile_state.FactualActivityType;
 import com.factual.engine.api.mobile_state.FactualPlaceVisit;
 import com.factual.engine.api.mobile_state.UserJourneySpan;
 import com.segment.analytics.Analytics;
@@ -253,9 +252,6 @@ public class SegmentEngineIntegrationTest {
    * @return A unique UserJourneySpan object to be tested.
    */
   private UserJourneySpan createSpan() {
-    // Create unique parameters for UserJourneySpan
-    long startTimestamp = System.currentTimeMillis() - 100000;
-    long endTimestamp = System.currentTimeMillis();
     Location location = new Location("test-location");
     location.setLatitude(33.8003);
     location.setLongitude(-117.8827);
@@ -291,18 +287,7 @@ public class SegmentEngineIntegrationTest {
         false,
         false);
 
-    return new UserJourneySpan(
-        "this-is-a-test",
-        startTimestamp,
-        false,
-        endTimestamp,
-        false,
-        false,
-        false,
-        placeVisit,
-        null,
-        FactualActivityType.NO_ACTIVITY,
-        null);
+    return new UserJourneySpan.Builder().setCurrentPlace(placeVisit).build();
   }
 
   /**

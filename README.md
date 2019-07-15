@@ -97,7 +97,7 @@ public class ExampleFactualClientReceiver extends FactualClientReceiver {
     /* Start tracking spans */
     SegmentEngineIntegration.trackUserJourneySpans(getContext().getApplicationContext(),
         maxAttachedPlaceEventsPerSpan);
-}
+    }
 
     ...
 }
