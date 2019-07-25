@@ -6,6 +6,7 @@ import com.factual.engine.api.FactualPlace;
 import com.factual.engine.api.mobile_state.UserJourneyEvent;
 import com.factual.engine.api.mobile_state.UserJourneyReceiver;
 import com.factual.engine.api.mobile_state.UserJourneySpan;
+import com.factual.engine.integrationutils.*;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.Properties;
 import java.util.List;

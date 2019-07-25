@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 import com.factual.engine.api.CircumstanceResponse;
 import com.factual.engine.api.FactualPlace;
+import com.factual.engine.integrationutils.PlaceCategoryMap;
+import com.factual.engine.integrationutils.PlaceChainMap;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.Properties;
 import java.util.List;
