@@ -12,7 +12,7 @@
 
 **(3)** Locate your Segment API Key for your app from the [Segment Dashboard](https://dashboard.braze.com).  In **Sources** select your app, open the **settings** tab, and select **API Keys**.
 
-**(4)** Add your Braze SDK API Key to [Configuration.java](https://github.com/Factual/engine-segment-integration-android/tree/master/example/src/main/java/com/factual/engine/segment/Configuration.java#L6)
+**(4)** Add your Segment Write API Key to [Configuration.java](https://github.com/Factual/engine-segment-integration-android/tree/master/example/src/main/java/com/factual/engine/segment/Configuration.java#L6)
 
 ### Explore
 
