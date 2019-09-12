@@ -2,14 +2,26 @@ package com.factual.engine.segment;
 
 import android.util.Log;
 import com.factual.engine.FactualClientReceiver;
+import com.factual.engine.FactualEngine;
 import com.factual.engine.api.CircumstanceResponse;
 import com.factual.engine.api.FactualCircumstance;
 import com.factual.engine.api.FactualConfigMetadata;
 import com.factual.engine.api.FactualError;
+import com.factual.engine.api.FactualException;
 import com.factual.engine.api.FactualInfo;
 import java.util.List;
 
 public class ExampleFactualClientReceiver extends FactualClientReceiver {
+
+    @Override
+    public void onInitialized() {
+        try {
+            FactualEngine.setUserJourneyReceiver(SegmentEngineUserJourneyReceiver.class);
+            FactualEngine.start();
+        } catch (FactualException e) {
+            Log.e("engine", e.getMessage());
+        }
+    }
 
     @Override
     public void onStarted() {

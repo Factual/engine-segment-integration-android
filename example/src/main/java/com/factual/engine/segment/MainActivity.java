@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.factual.engine.FactualEngine;
-import com.factual.engine.api.FactualException;
 import com.segment.analytics.Analytics;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,31 +29,18 @@ public class MainActivity extends AppCompatActivity {
         Analytics.setSingletonInstance(analytics);
 
         /* Set up Engine */
-        try {
+        if (!isRequiredPermissionAvailable()) {
+            requestLocationPermissions();
+        } else {
             initializeEngine();
-            if (isRequiredPermissionAvailable()) {
-                startEngine();
-            } else {
-                requestLocationPermissions();
-            }
-        } catch (FactualException e) {
-            Log.e("engine", e.getMessage());
         }
     }
 
-    public void initializeEngine() throws FactualException {
+    public void initializeEngine() {
         Log.i("engine", "starting initialization");
-        FactualEngine.initialize(getApplicationContext(), Configuration.ENGINE_API_KEY, ExampleFactualClientReceiver.class);
-        FactualEngine.setUserJourneyReceiver(SegmentEngineUserJourneyReceiver.class);
-        Log.i("engine", "initialization complete");
-    }
-
-    private void startEngine() {
-        try {
-            FactualEngine.start();
-        } catch (FactualException e) {
-            Log.e("engine", e.getMessage());
-        }
+        FactualEngine.initialize(getApplicationContext(),
+            Configuration.ENGINE_API_KEY,
+            ExampleFactualClientReceiver.class);
     }
 
     /* Permission Boiler plate */
@@ -63,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
         @NonNull int[] grantResults) {
         if (isRequiredPermissionAvailable()) {
-            startEngine();
+            initializeEngine();
         } else {
             Log.e(TAG, "Necessary permissions were never provided.");
         }

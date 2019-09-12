@@ -69,15 +69,27 @@ public class ExampleFactualClientReceiver extends FactualClientReceiver {
 }
 ```
 
+Be sure to assign the Client Receiver when initializing Engine.
+```java
+public void initializeEngine() {
+    FactualEngine.initialize(this,
+        Configuration.ENGINE_API_KEY,
+        ExampleFactualClientReceiver.class);
+}
+```
+
 ### Tracking Factual Engine User Journey Spans
 
-Start tracking User Journey Spans by first setting User Journey Receiver to `SegmentEngineUserJourneyReceiver` before starting FactualEngine.
+Start tracking spans by setting the user journey receiver in the `onInitialized()` callback of `FactualClientReceiver`.
 ```java
-public void initializeEngine() throws FactualException {
-    FactualEngine.initialize(this, Configuration.ENGINE_API_KEY);
-    FactualEngine.setReceiver(ExampleFactualClientReceiver.class);
+@Override
+public void onInitialized() {
+  try {
     FactualEngine.setUserJourneyReceiver(SegmentEngineUserJourneyReceiver.class);
     FactualEngine.start();
+  } catch (FactualException e) {
+    Log.e("engine", e.getMessage());
+  }
 }
 ```
 
