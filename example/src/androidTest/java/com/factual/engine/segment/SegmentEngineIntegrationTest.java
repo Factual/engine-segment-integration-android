@@ -2,9 +2,9 @@ package com.factual.engine.segment;
 
 import android.content.Context;
 import android.location.Location;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
 import android.util.Log;
+import androidx.test.runner.AndroidJUnit4;
 import com.factual.engine.api.CircumstanceResponse;
 import com.factual.engine.api.FactualCircumstance;
 import com.factual.engine.api.FactualPlace;
