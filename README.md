@@ -24,7 +24,7 @@ repositories {
 ...
 
 dependencies {
-  compile 'com.factual.engine:segment-engine:1.0.0'
+  compile 'com.factual.engine:segment-engine:2.0.0'
 }
 ```
 

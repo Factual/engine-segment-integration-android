@@ -9,7 +9,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -31,18 +31,18 @@ repositories {
 
 ext {
     segmentVersion = "[4.0.0,)"
-    engineVersion = "[11.0.0,13.0.0["
-    utilsVersion = "[1.0.0,)"
+    engineVersion = "[13.0.0,)"
+    utilsVersion = "[2.0.0,)"
 
     artifact = "segment-engine"
-    libraryVersion = "1.0.0"
+    libraryVersion = "2.0.0"
 }
 
 dependencies {
-    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'androidx.annotation:annotation:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 
     api "com.factual:integration-utils:${utilsVersion}"
     api "com.segment.analytics.android:analytics:${segmentVersion}"
